@@ -1,0 +1,146 @@
+
+
+
+```{r}
+#import the data
+
+TA_13 <- read.csv("~/Desktop/thesis/what_are_hits/13_gff.csv")
+TA_10 <- read.csv("~/Desktop/thesis/what_are_hits/10_withgff.csv")
+TA_09 <- read.csv("~/Desktop/thesis/what_are_hits/9_withgff.csv")
+
+UP_13 <- read.csv("~/Desktop/thesis/RNAseq/originals of upregulated genes/13.2_UP_Genes.csv")
+UP_10 <- read.csv("~/Desktop/thesis/RNAseq/originals of upregulated genes/10_UP_Genes.csv")
+UP_09 <- read.csv("~/Desktop/thesis/RNAseq/originals of upregulated genes/9.2_UP_Genes.csv")
+```
+
+
+
+
+# For 13.2
+
+```{r}
+TA_13$prokka <- ""
+TA_13["rna_up"] <- NA
+l <- as.numeric(length(TA_13$name))
+TA_13$name <- as.character(TA_13$name)
+
+
+#take the name and make a list out of it
+for(i in 1:l) {
+  mystring <- TA_13$name[i]
+  TA_13$list[i] <- as.list(strsplit(mystring, ""))
+  if(length(TA_13$list[i]) > 14){
+  TA_13$list[i] <- TA_13$list[i][1:14]
+}}
+
+#make the prokka name
+for(i in 1:l){
+  short_list <- TA_13$list[[i]][1:14]
+  TA_13$prokka[i] <- paste(short_list, collapse = "")
+}
+```
+
+```{r}
+#is the gene upregulated?
+for(i in 1:l){
+  if(TA_13$prokka[i] %in% UP_13$prokka){
+    TA_13$rna_up[i] = "yes"
+  } else{
+    TA_13$rna_up[i] = "no"
+  }
+}
+```
+
+# For 10
+
+```{r}
+TA_10$prokka <- ""
+TA_10["rna_up"] <- NA
+l <- as.numeric(length(TA_10$name))
+TA_10$name <- as.character(TA_10$name)
+
+
+#take the name and make a list out of it
+for(i in 1:l) {
+  mystring <- TA_10$name[i]
+  TA_10$list[i] <- as.list(strsplit(mystring, ""))
+  if(length(TA_10$list[i]) > 14){
+  TA_10$list[i] <- TA_10$list[i][1:14]
+}}
+
+#make the prokka name
+for(i in 1:l){
+  short_list <- TA_10$list[[i]][1:14]
+  TA_10$prokka[i] <- paste(short_list, collapse = "")
+}
+```
+
+```{r}
+#is the gene upregulated
+for(i in 1:l){
+  if(TA_10$prokka[i] %in% UP_10$prokka){
+    TA_10$rna_up[i] = "yes"
+  } else{
+    TA_10$rna_up[i] = "no"
+  }
+}
+```
+
+
+
+# For 9.2
+
+```{r}
+TA_09$prokka <- ""
+TA_09["rna_up"] <- NA
+l <- as.numeric(length(TA_09$name))
+TA_09$name <- as.character(TA_09$name)
+
+
+#take the name and make a list out of it
+for(i in 1:l) {
+  mystring <- TA_09$name[i]
+  TA_09$list[i] <- as.list(strsplit(mystring, ""))
+  if(length(TA_09$list[i]) > 14){
+  TA_09$list[i] <- TA_09$list[i][1:14]
+}}
+
+#make the prokka name
+for(i in 1:l){
+  short_list <- TA_09$list[[i]][1:14]
+  TA_09$prokka[i] <- paste(short_list, collapse = "")
+}
+```
+
+```{r}
+for(i in 1:l){
+  if(TA_09$prokka[i] %in% UP_09$prokka){
+    TA_09$rna_up[i] = "yes"
+  } else{
+    TA_09$rna_up[i] = "no"
+  }
+}
+```
+
+```{r}
+TA_09 <- subset(TA_09, select = -list)
+TA_10 <- subset(TA_10, select = -list)
+TA_13 <- subset(TA_13, select = -list)
+```
+
+```{r}
+write.csv(TA_09, "~/Desktop/thesis/TA_09_2.csv")
+write.csv(TA_10, "~/Desktop/thesis/TA_10.csv")
+write.csv(TA_13, "~/Desktop/thesis/TA_13_2.csv")
+
+```
+
+
+```{r}
+#Time to make this more of a table
+
+TA_09 <- TA_09 %>% filter(did.it.work != "no hit") %>% filter(did.it.work != "nohit") %>% 
+  filter(did.it.work != "nothit")
+
+```
+
